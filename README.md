@@ -338,7 +338,7 @@ def bucle_procesador_masivo(c_dir, h_dir):
             
             print(f"   {BLANCO_BR}⏳ Verificando conectividad con el panel...")
             try:
-                # BYPASS DE CORTAFUEGOS: Comprobación con parámetros ficticios
+                # CORRECCIÓN EN EL CHECK DE ENTRADA: bypass de control contra el cortafuegos
                 test_url = f"{url_in.rstrip('/')}/player_api.php?username=test&password=test"
                 test_r = requests.get(test_url, timeout=3.0)
                 
@@ -410,8 +410,6 @@ def bucle_procesador_masivo(c_dir, h_dir):
                         
                     print(f"\n{NEON_VERDE}[HIT DETECTADO] 🥷🏻🇪🇨\n{msg.strip()}\n")
                 
-                if procesados % 10 == 0 or procesados == totales:
-
                 # REFRESCADOR ANTI-TILDE: Actualiza la barra inferior solo cada 10 cuentas para fluidez absoluta
                 if procesados % 10 == 0 or procesados == totales:
                     tiempo_transcurrido = time.time() - tiempo_inicio
@@ -445,4 +443,5 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print(f"\n\n{ROJO_BR}❌ Script cerrado por el usuario. ¡Hasta la próxima, Zurdo!")
         sys.exit(0)
+
 
