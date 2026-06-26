@@ -234,10 +234,6 @@ def realizar_consulta_panel(url_panel, usuario, contrasena, h_dir):
                             if segundos_restantes <= 0:
                                 return "BAD", None, None  
                             elif segundos_restantes <= 2592000:
-
-                            if segundos_restantes <= 0:
-                                return "BAD", None, None  
-                            elif segundos_restantes <= 2592000:
                                 tipo_vencimiento = "pronto"
                                 texto_clasificacion = "VENCE PRONTO (⚠️)"
                             else:
@@ -324,7 +320,7 @@ def bucle_procesador_masivo(c_dir, h_dir):
         time.sleep(1.5)
         return
 
-    # ENTRADA DE SERVIDORES CON LA CORRECCIÓN EN VIVO ANTI-BLOQUEO (HTTP 403/401 BYPASS)
+    # ENTRADA DE SERVIDORES CON EL BYPASS DE COMPROBACIÓN CORREGIDO (200, 401, 403)
     print(f"\n{CIAN_ELEC}🌐 Ingresa los servidores Xtream objetivos (Escribe 'OK' para terminar):")
     lista_paneles = []
     for i in range(10):
@@ -342,7 +338,7 @@ def bucle_procesador_masivo(c_dir, h_dir):
             
             print(f"   {BLANCO_BR}⏳ Verificando conectividad con el panel...")
             try:
-                # BYPASS: Evaluamos respuestas válidas de control (200 OK, 401 Unauthorized, 403 Forbidden)
+                # BYPASS DE CORTAFUEGOS: Comprobación con parámetros ficticios
                 test_url = f"{url_in.rstrip('/')}/player_api.php?username=test&password=test"
                 test_r = requests.get(test_url, timeout=3.0)
                 
@@ -380,7 +376,7 @@ def bucle_procesador_masivo(c_dir, h_dir):
         return
 
     limite_bots = 25
-    print(f"\n{NEON_VERDE}🔥 Iniciando escaneo con {limite_bots} bots activos en paralelo...")
+    print(f"\n{NEON_VERDE}🔥 Inciando escaneo con {limite_bots} bots activos en paralelo...")
     print(f"{BLANCO_BR}Monitoreando progreso en tiempo real. Presiona CTRL + C para salir al menú.\n")
     time.sleep(1.0)
 
@@ -415,6 +411,9 @@ def bucle_procesador_masivo(c_dir, h_dir):
                     print(f"\n{NEON_VERDE}[HIT DETECTADO] 🥷🏻🇪🇨\n{msg.strip()}\n")
                 
                 if procesados % 10 == 0 or procesados == totales:
+
+                # REFRESCADOR ANTI-TILDE: Actualiza la barra inferior solo cada 10 cuentas para fluidez absoluta
+                if procesados % 10 == 0 or procesados == totales:
                     tiempo_transcurrido = time.time() - tiempo_inicio
                     cpm = int((procesados / tiempo_transcurrido) * 60) if tiempo_transcurrido > 0 else 0
                     
@@ -446,3 +445,4 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print(f"\n\n{ROJO_BR}❌ Script cerrado por el usuario. ¡Hasta la próxima, Zurdo!")
         sys.exit(0)
+
