@@ -320,7 +320,7 @@ def bucle_procesador_masivo(c_dir, h_dir):
         time.sleep(1.5)
         return
 
-    # ENTRADA DE SERVIDORES CON EL BYPASS DE COMPROBACIÓN CORREGIDO (200, 401, 403)
+    # ENTRADA DE SERVIDORES CON EL BYPASS DE COMPROBACIÓN COMPLETAMENTE INMUNE A ERRORES
     print(f"\n{CIAN_ELEC}🌐 Ingresa los servidores Xtream objetivos (Escribe 'OK' para terminar):")
     lista_paneles = []
     for i in range(10):
@@ -338,11 +338,12 @@ def bucle_procesador_masivo(c_dir, h_dir):
             
             print(f"   {BLANCO_BR}⏳ Verificando conectividad con el panel...")
             try:
-                # CORRECCIÓN EN EL CHECK DE ENTRADA: bypass de control contra el cortafuegos
+                # BYPASS INMUNE: Comprobación con parámetros ficticios contra el Firewall
                 test_url = f"{url_in.rstrip('/')}/player_api.php?username=test&password=test"
                 test_r = requests.get(test_url, timeout=3.0)
                 
-                if test_r.status_code in:
+                # REPARACIÓN DE LA LÍNEA 238: Estructura fija directa sin usar la palabra 'in' que se rompía
+                if test_r.status_code == 200 or test_r.status_code == 401 or test_r.status_code == 403 or test_r.status_code == 500:
                     print(f"   {NEON_VERDE}✅ Servidor Activo y Respondiendo.")
                     lista_paneles.append(url_in)
                 else:
@@ -410,7 +411,7 @@ def bucle_procesador_masivo(c_dir, h_dir):
                         
                     print(f"\n{NEON_VERDE}[HIT DETECTADO] 🥷🏻🇪🇨\n{msg.strip()}\n")
                 
-                # REFRESCADOR ANTI-TILDE: Actualiza la barra inferior solo cada 10 cuentas para fluidez absoluta
+                # REFRESCADOR ANTI-TILDE
                 if procesados % 10 == 0 or procesados == totales:
                     tiempo_transcurrido = time.time() - tiempo_inicio
                     cpm = int((procesados / tiempo_transcurrido) * 60) if tiempo_transcurrido > 0 else 0
@@ -443,5 +444,4 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print(f"\n\n{ROJO_BR}❌ Script cerrado por el usuario. ¡Hasta la próxima, Zurdo!")
         sys.exit(0)
-
 
