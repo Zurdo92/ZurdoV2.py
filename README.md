@@ -93,11 +93,17 @@ def verificar_un_proxy(p_dict):
     return False, p_dict
 
 def descargar_proxies_en_linea(protocolo_tipo):
-    """Descarga proxies en vivo usando el endpoint gratuito y funcional de ProxyScrape API"""
-    print(f"\n{Fore.YELLOW}📡 Conectando a servidores públicos de ProxyScrape...")
-    proto_str = "http" if protocolo_tipo == '1' else ("socks4" if protocolo_tipo == '2' else "socks5")
-    url_source = f"https://proxyscrape.com{proto_str}&timeout=1500&country=all&ssl=all&anonymity=all"
+    """Descarga proxies en vivo utilizando las 2 fuentes de GitHub originales de tu segundo script"""
+    print(f"\n{Fore.YELLOW}📡 Conectando a tus repositorios y servidores de red...")
     
+    # Tus fuentes basadas en repositorios públicos en crudo (.txt)
+    if protocolo_tipo == '1':
+        url_source = "https://githubusercontent.com"
+    elif protocolo_tipo == '2':
+        url_source = "https://githubusercontent.com"
+    elif protocolo_tipo == '3':
+        url_source = "https://githubusercontent.com"
+        
     lineas_descargadas = []
     try:
         headers = {"User-Agent": random.choice(USER_AGENTS)}
@@ -106,6 +112,18 @@ def descargar_proxies_en_linea(protocolo_tipo):
             lineas_descargadas = [l.strip() for l in r.text.split("\n") if l.strip() and not l.startswith("#")]
     except:
         pass
+        
+    # Tu fuente de respaldo #2 (Si GitHub falla, conmuta automáticamente a ProxyScrape API)
+    if not lineas_descargadas:
+        try:
+            proto_str = "http" if protocolo_tipo == '1' else ("socks4" if protocolo_tipo == '2' else "socks5")
+            fallback_url = f"https://proxyscrape.com{proto_str}&timeout=1500&country=all"
+            r = requests.get(fallback_url, timeout=5)
+            if r.status_code == 200:
+                lineas_descargadas = [l.strip() for l in r.text.split("\n") if l.strip()]
+        except:
+            pass
+            
     return lineas_descargadas
 
 def preguntar_y_cargar_proxies(p_dir):
@@ -116,9 +134,9 @@ def preguntar_y_cargar_proxies(p_dir):
         os.system('cls' if os.name == 'nt' else 'clear')
         print(BANNER_RECUADRO)
         print(f"{Fore.YELLOW}🛡️  SISTEMA DE ASIGNACIÓN DE RED IP:")
-        print(f" {Fore.CYAN}[1]{Fore.RESET} PROXIES DEL SISTEMA (Archivos Locales .txt)")
-        print(f" {Fore.CYAN}[2]{Fore.RESET} PROXIES EN LÍNEA (Descarga Automática Actualizada)")
-        print(f" {Fore.CYAN}[3]{Fore.RESET} CANCELAR (Usar Internet Residencial Directo)")
+        print(f" {Fore.CYAN}{Fore.RESET} PROXIES DEL SISTEMA (Archivos Locales .txt)")
+        print(f" {Fore.CYAN}{Fore.RESET} PROXIES EN LÍNEA (Descarga Automática Actualizada)")
+        print(f" {Fore.CYAN}{Fore.RESET} CANCELAR (Usar Internet Residencial Directo)")
         print(Fore.MAGENTA + "════════════════════════════════════════════")
         
         opc_principal = input(f"{Fore.YELLOW}👉 Selecciona tu modo de red (1-3): {Fore.CYAN}").strip()
@@ -166,9 +184,9 @@ def preguntar_y_cargar_proxies(p_dir):
             continue
 
         print(f"\n{Fore.YELLOW}🌐 SELECCIONA EL PROTOCOLO REQUERIDO:")
-        print(f" {Fore.CYAN}[1]{Fore.RESET} HTTP / HTTPS")
-        print(f" {Fore.CYAN}[2]{Fore.RESET} SOCKS4")
-        print(f" {Fore.CYAN}[3]{Fore.RESET} SOCKS5 (Evita fugas DNS)")
+        print(f" {Fore.CYAN}{Fore.RESET} HTTP / HTTPS")
+        print(f" {Fore.CYAN}{Fore.RESET} SOCKS4")
+        print(f" {Fore.CYAN}{Fore.RESET} SOCKS5 (Evita fugas DNS)")
         
         opc_proto = input(f"{Fore.YELLOW}👉 Elige una opción (1-3): {Fore.CYAN}").strip()
         if opc_proto not in ['1', '2', '3']:
@@ -227,7 +245,7 @@ def preguntar_y_cargar_proxies(p_dir):
             time.sleep(2.5)
 
 def realizar_consulta_panel(url_panel, usuario, contrasena, h_dir):
-    """Módulo de verificación Xtream Codes extendido de ZurdoV2. Extrae y clasifica el vencimiento"""
+    """Módulo de verificación Xtream Codes extendido de ZurdoV2. Extrae y clasifica la vigencia"""
     headers = {"User-Agent": random.choice(USER_AGENTS)}
     proxy = random.choice(PROXIES_GLOBALES) if USAR_PROXIES and PROXIES_GLOBALES else None
     
@@ -257,9 +275,9 @@ def realizar_consulta_panel(url_panel, usuario, contrasena, h_dir):
                             timestamp_exp = int(expira_raw)
                             expira = datetime.fromtimestamp(timestamp_exp).strftime('%Y-%m-%d %H:%M:%S')
                             
-                            # Cálculo matemático de días restantes
+                            # Condicionales para clasificar las cuentas por tiempo (30 días = 2592000 seg)
                             segundos_restantes = timestamp_exp - int(time.time())
-                            if segundos_restantes <= 2592000:  # 30 días o menos
+                            if segundos_restantes <= 2592000:
                                 tipo_vencimiento = "pronto"
                             else:
                                 tipo_vencimiento = "mucho"
@@ -275,7 +293,7 @@ def realizar_consulta_panel(url_panel, usuario, contrasena, h_dir):
                     except:
                         creado = "N/A"
 
-                    # Tu recuadro original intacto sin quitarle ninguna línea
+                    # Tu recuadro original de datos intacto sin quitarle ninguna línea
                     resultado_formateado = (
                         f"╔══════════════════ [ HIT ENCONTRADO ] ══════════════════\n"
                         f" 🔗 PANEL: {url_base}\n"
@@ -356,7 +374,7 @@ def bucle_procesador_masivo(p_dir, c_dir, h_dir):
                 if l_s and ":" in l_s and not l_s.startswith("#"):
                     parts = l_s.split(":")
                     if len(parts) >= 2:
-                        cuentas_limpias.append((parts[0].strip(), parts[1].strip()))
+                        cuentas_limpias.append((parts.strip(), parts.strip()))
     except:
         pass
 
@@ -365,7 +383,7 @@ def bucle_procesador_masivo(p_dir, c_dir, h_dir):
         time.sleep(2.5)
         return
 
-    # Ajuste manual estricto solicitado: 25 bots simultáneos para mitigar lag universal
+    # Ajuste manual estricto: 25 bots simultáneos para mitigar lag universal
     limite_bots = 25
     print(f"\n{Fore.GREEN}🔥 Iniciando escaneo con {limite_bots} bots estables en paralelo...")
     print(f"{Fore.WHITE}Monitoreando progreso en tiempo real. Presiona CTRL + C para salir al menú.\n")
@@ -374,10 +392,10 @@ def bucle_procesador_masivo(p_dir, c_dir, h_dir):
     totales = len(cuentas_limpias) * len(lista_paneles)
     procesados = 0
     
-    # Contadores dinámicos con la clasificación por emojis
-    cuenta_ilimitados = 0   # 💎
-    cuenta_mucho_tiempo = 0  # 🟢
-    cuenta_pronto_vence = 0  # ⚠️
+    # Contadores dinámicos clasificados por emojis
+    cuenta_ilimitados = 0   # 💎 (Nunca vencen)
+    cuenta_mucho_tiempo = 0  # 🟢 (Vencen después de mucho)
+    cuenta_pronto_vence = 0  # ⚠️ (Vencen pronto)
 
     with ThreadPoolExecutor(max_workers=limite_bots) as executor:
         futuros = []
@@ -400,7 +418,7 @@ def bucle_procesador_masivo(p_dir, c_dir, h_dir):
                         
                     print(f"\n{Fore.GREEN}{msg.strip()}")
                 
-                # Barra de progreso optimizada que refresca la misma línea (Anti-Lag)
+                # Barra de progreso dinámica que refresca la misma línea (Anti-Lag)
                 sys.stdout.write(
                     f"\r{Fore.CYAN}[PROGRESO]: {procesados}/{totales} | "
                     f"{Fore.CYAN}💎: {cuenta_ilimitados} | "
